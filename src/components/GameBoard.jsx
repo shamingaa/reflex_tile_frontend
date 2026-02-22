@@ -9,46 +9,49 @@ const getGrid = () => {
 
 const DIFFICULTY = {
   normal: {
-    startTime: 28,
+    startTime: 30,
     missPenalty: 4,
-    hazardChance: 0.28,
-    timeRewardCap: 40,
-    paceBase: 1700,
-    paceFloor: 620,
-    paceScoreFactor: 6.5,
-    paceStreakFactor: 13,
-    rewardBonus: 0.6,
-    rewardFloor: 0.35,
-    rewardSlope: 900,
-    rewardStreakFactor: 0.015,
+    hazardChance: 0.22,
+    timeRewardCap: 50,
+    paceBase: 1900,
+    paceFloor: 900,
+    paceScoreFactor: 4.5,
+    paceStreakFactor: 9,
+    rewardBonus: 0.8,
+    rewardFloor: 0.55,
+    rewardSlope: 940,
+    rewardStreakFactor: 0.012,
+    minGain: 1.1,
   },
   hard: {
-    startTime: 24,
+    startTime: 25,
     missPenalty: 4.5,
-    hazardChance: 0.32,
-    timeRewardCap: 34,
-    paceBase: 1450,
-    paceFloor: 500,
-    paceScoreFactor: 8,
-    paceStreakFactor: 17,
-    rewardBonus: 0.45,
-    rewardFloor: 0.28,
-    rewardSlope: 880,
-    rewardStreakFactor: 0.02,
+    hazardChance: 0.3,
+    timeRewardCap: 40,
+    paceBase: 1500,
+    paceFloor: 700,
+    paceScoreFactor: 6.5,
+    paceStreakFactor: 12,
+    rewardBonus: 0.65,
+    rewardFloor: 0.38,
+    rewardSlope: 900,
+    rewardStreakFactor: 0.018,
+    minGain: 0.85,
   },
   extreme: {
     startTime: 20,
     missPenalty: 5,
-    hazardChance: 0.36,
-    timeRewardCap: 30,
+    hazardChance: 0.38,
+    timeRewardCap: 34,
     paceBase: 1250,
-    paceFloor: 380,
-    paceScoreFactor: 9,
-    paceStreakFactor: 20,
-    rewardBonus: 0.3,
-    rewardFloor: 0.22,
-    rewardSlope: 850,
-    rewardStreakFactor: 0.025,
+    paceFloor: 550,
+    paceScoreFactor: 8.5,
+    paceStreakFactor: 15,
+    rewardBonus: 0.55,
+    rewardFloor: 0.32,
+    rewardSlope: 860,
+    rewardStreakFactor: 0.023,
+    minGain: 0.75,
   },
 };
 
@@ -306,7 +309,8 @@ function GameBoard({ playerName, mode, difficulty = 'normal', onFinish }) {
       settings.rewardFloor,
       1.25 - reaction / settings.rewardSlope - streak * settings.rewardStreakFactor
     );
-    setTimeLeft((t) => clamp(t + timeReward + settings.rewardBonus, 0, settings.timeRewardCap));
+    const gain = Math.max(settings.minGain, timeReward + settings.rewardBonus);
+    setTimeLeft((t) => clamp(t + gain, 0, settings.timeRewardCap));
     spawnNewTarget();
   };
 
@@ -349,10 +353,13 @@ function GameBoard({ playerName, mode, difficulty = 'normal', onFinish }) {
               idx === activeCell ? 'cell--life' : ''
             }`}
             style={idx === activeCell ? { '--life': `${difficultyWindow}ms` } : undefined}
-            onClick={() => registerHit(idx)}
-          >
-            {idx === activeCell ? '●' : idx === hazardCell ? '×' : ''}
-          </button>
+            onPointerDown={() => registerHit(idx)}
+            onClick={(e) => {
+              e.preventDefault();
+              registerHit(idx);
+            }}
+            aria-label={idx === activeCell ? 'Active target' : idx === hazardCell ? 'Hazard' : 'Tile'}
+          />
         ))}
         {status !== 'playing' && (
           <div className="overlay">

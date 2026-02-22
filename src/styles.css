@@ -123,6 +123,7 @@ h1 { margin: 0; font-size: 28px; letter-spacing: -0.4px; }
   font-size: 22px;
   cursor: pointer;
   transition: transform 0.08s, background 0.1s, box-shadow 0.1s;
+  touch-action: manipulation;
 }
 .cell:hover { transform: translateY(-2px); }
 .cell--active { background: radial-gradient(circle, rgba(124,243,197,0.4) 0%, rgba(124,243,197,0.1) 55%, transparent 70%); box-shadow: 0 0 24px rgba(124,243,197,0.5); }
