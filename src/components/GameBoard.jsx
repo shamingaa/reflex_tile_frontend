@@ -352,9 +352,25 @@ function GameBoard({ playerName, mode, difficulty = 'normal', onFinish, personal
     return () => clearTimeout(timeout);
   }, [status, activeCell, difficultyWindow]); // eslint-disable-line
 
+  // Block accidental refresh while playing
+  useEffect(() => {
+    if (status !== 'playing') return undefined;
+    const onBeforeUnload = (e) => {
+      e.preventDefault();
+      e.returnValue = '';
+    };
+    window.addEventListener('beforeunload', onBeforeUnload);
+    return () => window.removeEventListener('beforeunload', onBeforeUnload);
+  }, [status]);
+
   // Keyboard shortcuts
   useEffect(() => {
     const onKey = (e) => {
+      // Block F5 / Ctrl+R / Cmd+R refresh while playing
+      if (status === 'playing') {
+        const isRefresh = e.code === 'F5' || ((e.ctrlKey || e.metaKey) && e.code === 'KeyR');
+        if (isRefresh) { e.preventDefault(); return; }
+      }
       if (e.code === 'Space') {
         e.preventDefault();
         if ((status === 'idle' || status === 'done') && playerName?.trim()) reset();
@@ -524,6 +540,7 @@ function GameBoard({ playerName, mode, difficulty = 'normal', onFinish, personal
       <div
         className="arena"
         style={{ gridTemplateColumns: `repeat(${grid.cols}, minmax(0, 1fr))` }}
+        onTouchMove={(e) => e.preventDefault()}
       >
         {[...Array(cellCount)].map((_, idx) => (
           <button
