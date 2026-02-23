@@ -534,3 +534,236 @@ h1 { margin: 0; font-size: 28px; letter-spacing: -0.4px; }
   .cell  { border-radius: 10px; font-size: 18px; }
   .end-stats { grid-template-columns: 1fr 1fr; }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   STATS PAGE
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.stats-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  padding-bottom: 32px;
+}
+
+.stats-page__title {
+  margin: 0 0 4px;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+}
+
+.stats-section-label {
+  margin: 0 0 12px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.stats-row--wrap { flex-wrap: wrap; }
+
+/* ── Chart card ─────────────────────────────────────────────────────────── */
+.stats-chart-card {
+  background: #0d1017;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 16px;
+  padding: 16px 16px 10px;
+  box-shadow: 0 12px 28px rgba(0,0,0,0.28);
+}
+
+.stats-chart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.stats-chart {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+
+.chart-axis-label {
+  font-size: 10px;
+  fill: #9fb0c0;
+  font-family: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+}
+
+.chart-empty-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 120px;
+  color: var(--muted);
+  font-size: 14px;
+  text-align: center;
+  padding: 16px;
+}
+
+/* Hover tooltip */
+.chart-tooltip {
+  position: absolute;
+  top: -2px;
+  transform: translateX(-50%);
+  background: #1a2030;
+  border: 1px solid rgba(124,243,197,0.3);
+  border-radius: 8px;
+  padding: 5px 10px;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  z-index: 10;
+  white-space: nowrap;
+}
+.chart-tooltip__score {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--accent);
+}
+.chart-tooltip__date {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+/* ── Trend card ─────────────────────────────────────────────────────────── */
+.stats-trend-card {
+  background: #0d1017;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 12px 28px rgba(0,0,0,0.28);
+}
+
+.stats-trend-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 9px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.stats-trend-row:last-child { border-bottom: none; }
+
+.stats-trend-label {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.stats-trend-value {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.reaction-label {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: rgba(90,209,255,0.1);
+  border: 1px solid rgba(90,209,255,0.22);
+  color: var(--accent-2);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.stats-trend-badge {
+  font-size: 12px;
+  font-weight: 800;
+  padding: 4px 12px;
+  border-radius: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.stats-trend-badge--up {
+  background: rgba(124,243,197,0.1);
+  border: 1px solid rgba(124,243,197,0.3);
+  color: var(--accent);
+}
+.stats-trend-badge--down {
+  background: rgba(255,95,109,0.1);
+  border: 1px solid rgba(255,95,109,0.3);
+  color: var(--danger);
+}
+.stats-trend-badge--flat {
+  background: rgba(90,209,255,0.08);
+  border: 1px solid rgba(90,209,255,0.24);
+  color: var(--accent-2);
+}
+
+/* ── Runs table card ────────────────────────────────────────────────────── */
+.stats-runs-card {
+  background: #0d1017;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 12px 28px rgba(0,0,0,0.28);
+}
+
+.stats-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 0 -4px;
+}
+
+.stats-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  min-width: 400px;
+}
+
+.stats-table th {
+  text-align: left;
+  padding: 5px 10px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  white-space: nowrap;
+  font-weight: 700;
+}
+
+.stats-table td {
+  padding: 9px 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.stats-table tr:last-child td { border-bottom: none; }
+.stats-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+.stats-table__score {
+  font-weight: 800;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Difficulty badges */
+.diff-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+.diff-badge--normal  { background: rgba(124,243,197,0.10); border: 1px solid rgba(124,243,197,0.25); color: var(--accent); }
+.diff-badge--hard    { background: rgba(255,179,71,0.10);  border: 1px solid rgba(255,179,71,0.28);  color: var(--warn);   }
+.diff-badge--extreme { background: rgba(255,95,109,0.10);  border: 1px solid rgba(255,95,109,0.30);  color: var(--danger); }
+
+/* Desktop: stats page gets more breathing room */
+@media (min-width: 720px) {
+  .stats-page { max-width: 700px; }
+}

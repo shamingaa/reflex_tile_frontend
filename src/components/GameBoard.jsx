@@ -105,6 +105,12 @@ function GameBoard({ playerName, mode, difficulty = 'normal', onFinish, personal
   const audioCtxRef = useRef(null);
   const popIdRef = useRef(0);
   const comboTimerRef = useRef(null);
+  // Stat refs — kept in sync with state so endRun can read them synchronously
+  const hitsRef          = useRef(0);
+  const missesRef        = useRef(0);
+  const fastestHitRef    = useRef(null);
+  const totalReactionRef = useRef(0);
+  const maxStreakRef     = useRef(0);
 
   const settings = useMemo(() => DIFFICULTY[difficulty] ?? DIFFICULTY.normal, [difficulty]);
 
@@ -170,7 +176,20 @@ function GameBoard({ playerName, mode, difficulty = 'normal', onFinish, personal
     if (finishedRef.current) return;
     finishedRef.current = true;
     setStatus('done');
-    onFinish?.({ score: scoreRef.current, playerName, mode });
+    const totalHits     = hitsRef.current;
+    const totalMisses   = missesRef.current;
+    const totalAttempts = totalHits + totalMisses;
+    onFinish?.({
+      score:       scoreRef.current,
+      playerName,
+      mode,
+      hits:        totalHits,
+      misses:      totalMisses,
+      accuracy:    totalAttempts > 0 ? Math.round((totalHits / totalAttempts) * 100) : null,
+      fastestHit:  fastestHitRef.current,
+      avgReaction: totalHits > 0 ? Math.round(totalReactionRef.current / totalHits) : null,
+      maxStreak:   maxStreakRef.current,
+    });
   };
 
   // FIX: use timeLeftRef for synchronous access — the old pattern (reading a local var
@@ -199,6 +218,11 @@ function GameBoard({ playerName, mode, difficulty = 'normal', onFinish, personal
     const startT = settings.startTime;
     timeLeftRef.current = startT;
     scoreRef.current = 0;
+    hitsRef.current = 0;
+    missesRef.current = 0;
+    fastestHitRef.current = null;
+    totalReactionRef.current = 0;
+    maxStreakRef.current = 0;
     setStatus('playing');
     setTimeLeft(startT);
     setScore(0);
@@ -270,6 +294,11 @@ function GameBoard({ playerName, mode, difficulty = 'normal', onFinish, personal
     const startT = settings.startTime;
     timeLeftRef.current = startT;
     scoreRef.current = 0;
+    hitsRef.current = 0;
+    missesRef.current = 0;
+    fastestHitRef.current = null;
+    totalReactionRef.current = 0;
+    maxStreakRef.current = 0;
     setStatus('idle');
     setTimeLeft(startT);
     setScore(0);
@@ -299,6 +328,7 @@ function GameBoard({ playerName, mode, difficulty = 'normal', onFinish, personal
     if (status !== 'playing') return;
     setStreak(0);
     setMisses((m) => m + 1);
+    missesRef.current += 1;
     flashCell(activeCell, 'miss');
     playTone(260, 120, 0.12);
     const ended = applyTimePenalty(settings.missPenalty);
@@ -315,6 +345,7 @@ function GameBoard({ playerName, mode, difficulty = 'normal', onFinish, personal
       playTone(140, 160, 0.14);
       setHazardCell(null);
       setStreak(0);
+      missesRef.current += 1;
       setScore((s) => { const v = Math.max(s - 10, 0); scoreRef.current = v; return v; });
       const ended = applyTimePenalty(settings.missPenalty + 1);
       if (!ended) spawnNewTarget();
@@ -323,6 +354,7 @@ function GameBoard({ playerName, mode, difficulty = 'normal', onFinish, personal
 
     if (cellIndex !== activeCell) {
       setStreak(0);
+      missesRef.current += 1;
       flashCell(cellIndex, 'miss');
       playTone(210, 110, 0.12);
       // FIX: was `|| 2.5` which would fall through on wrongClickPenalty=0; use ?? instead
@@ -335,9 +367,16 @@ function GameBoard({ playerName, mode, difficulty = 'normal', onFinish, personal
 
     // FIX: was setLastHitSpeed on every hit — showed the last hit not the fastest.
     // Now track the minimum reaction across the entire run.
-    setFastestHit((prev) => (prev === null ? Math.round(reaction) : Math.min(prev, Math.round(reaction))));
+    const reactionRounded = Math.round(reaction);
+    setFastestHit((prev) => (prev === null ? reactionRounded : Math.min(prev, reactionRounded)));
     setTotalReactionMs((prev) => prev + reaction);
     setHits((prev) => prev + 1);
+    // Sync to refs so endRun reads correct values at game-over time
+    hitsRef.current += 1;
+    totalReactionRef.current += reaction;
+    if (fastestHitRef.current === null || reactionRounded < fastestHitRef.current) {
+      fastestHitRef.current = reactionRounded;
+    }
 
     flashCell(cellIndex, 'hit');
     playTone(760 - Math.min(reaction, 900) / 3, 90, 0.12);
@@ -351,6 +390,7 @@ function GameBoard({ playerName, mode, difficulty = 'normal', onFinish, personal
 
     const newStreak = streak + 1;
     setStreak(newStreak);
+    if (newStreak > maxStreakRef.current) maxStreakRef.current = newStreak;
     showCombo(newStreak);
 
     const timeReward = Math.max(
