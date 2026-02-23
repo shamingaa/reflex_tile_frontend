@@ -106,6 +106,20 @@ function App() {
                 maxLength={32}
               />
             </label>
+            <div className="field inline">
+              <span>Player ID</span>
+              <div className="id-row">
+                <code className="device-id">{deviceId}</code>
+                <button
+                  type="button"
+                  className="mini-btn"
+                  onClick={() => navigator.clipboard?.writeText(deviceId)}
+                  aria-label="Copy player ID"
+                >
+                  Copy
+                </button>
+              </div>
+            </div>
             {/* Mode hidden; default solo */}
             <label className="field inline">
               <span>Difficulty</span>
