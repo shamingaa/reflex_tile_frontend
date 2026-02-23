@@ -520,9 +520,7 @@ function GameBoard({ playerName, mode, difficulty = 'normal', onFinish, personal
         <div className="hud-block">
           <p className="label">Score</p>
           <p className="value score">{score}</p>
-          {streak >= 3 && status === 'playing' && (
-            <p className="value small" style={{ color: 'var(--accent)', marginTop: 2 }}>x{streak}</p>
-          )}
+          <p className="value small" style={{ color: 'var(--accent)', marginTop: 2, visibility: streak >= 3 && status === 'playing' ? 'visible' : 'hidden' }}>x{streak}</p>
         </div>
         <div className="hud-block">
           {personalBest > 0 && <p className="value small pb-line">PB {personalBest}</p>}
