@@ -256,11 +256,11 @@ function App() {
         </div>
       </header>
 
-      {view === 'game' && (
+      {view === 'game' && nameLocked && (
         <p className="lede lede--tight">Tap the glowing orb before it fades. Keep the timer alive to climb the board.</p>
       )}
 
-      {loginStreak >= 2 && view === 'game' && (
+      {loginStreak >= 2 && view === 'game' && nameLocked && (
         <div className="streak-banner">{loginStreak} day streak — keep it going!</div>
       )}
       {noNameWarning && (
@@ -270,6 +270,32 @@ function App() {
       <main className="stack">
         {view === 'stats' ? (
           <StatsPage />
+        ) : !nameLocked && !nameEditMode ? (
+          <div className="name-gate">
+            <p className="name-gate__eyebrow">Welcome</p>
+            <h2 className="name-gate__title">Pick your player tag</h2>
+            <p className="name-gate__sub">
+              Your tag shows on the leaderboard and tracks your personal best.
+            </p>
+            <div className="name-gate__form">
+              <input
+                className="name-gate__input"
+                value={pendingName}
+                onChange={(e) => setPendingName(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleSaveName()}
+                maxLength={32}
+                placeholder="Enter a player tag…"
+                autoFocus
+              />
+              <button
+                className="name-gate__btn"
+                onClick={handleSaveName}
+                disabled={!pendingName.trim()}
+              >
+                Let's play →
+              </button>
+            </div>
+          </div>
         ) : (
           <GameBoard
             playerName={playerName}

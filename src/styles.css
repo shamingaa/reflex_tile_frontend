@@ -769,6 +769,92 @@ h1 { margin: 0; font-size: 28px; letter-spacing: -0.4px; }
   .stats-page { max-width: 700px; }
 }
 
+/* ── Name gate (first-time prompt) ────────────────────────────────────── */
+.name-gate {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 48px 24px 56px;
+  gap: 10px;
+}
+
+.name-gate__eyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+}
+
+.name-gate__title {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+
+.name-gate__sub {
+  margin: 0 0 12px;
+  color: var(--muted);
+  font-size: 15px;
+  max-width: 34ch;
+  line-height: 1.5;
+}
+
+.name-gate__form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 320px;
+}
+
+.name-gate__input {
+  width: 100%;
+  background: #10131c;
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 12px;
+  padding: 12px 16px;
+  color: var(--text);
+  font-size: 16px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  text-align: center;
+}
+
+.name-gate__input::placeholder { color: var(--muted); }
+
+.name-gate__input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(124,243,197,0.15);
+}
+
+.name-gate__btn {
+  width: 100%;
+  background: var(--accent);
+  color: #080b11;
+  border: none;
+  border-radius: 12px;
+  padding: 13px 24px;
+  font-size: 16px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  transition: opacity 0.15s, box-shadow 0.15s;
+  box-shadow: var(--glow);
+  letter-spacing: 0.01em;
+}
+
+.name-gate__btn:hover:not(:disabled) { opacity: 0.88; }
+.name-gate__btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
 /* ── Sound toggle bar ──────────────────────────────────────────────────── */
 .sound-bar {
   display: flex;
