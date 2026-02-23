@@ -293,6 +293,7 @@ function GameBoard({ playerName, mode, difficulty = 'normal', onFinish }) {
       flashCell(cellIndex, 'miss');
       playTone(210, 110, 0.12);
       applyTimePenalty(settings.wrongClickPenalty || 2.5);
+      if (navigator?.vibrate) navigator.vibrate(70);
       return;
     }
 
