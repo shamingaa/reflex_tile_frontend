@@ -24,6 +24,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [copyStatus, setCopyStatus] = useState('');
 
   const loadScores = async (selectedMode = mode) => {
     setLoading(true);
@@ -65,6 +66,17 @@ function App() {
       console.error(err);
       setError(err.message || 'Could not save score');
     }
+  };
+
+  const handleCopyId = async () => {
+    try {
+      await navigator.clipboard?.writeText(deviceId);
+      setCopyStatus('ID copied');
+    } catch (err) {
+      console.error('Copy failed', err);
+      setCopyStatus('Copy failed');
+    }
+    setTimeout(() => setCopyStatus(''), 1500);
   };
 
   return (
@@ -113,12 +125,13 @@ function App() {
                 <button
                   type="button"
                   className="mini-btn"
-                  onClick={() => navigator.clipboard?.writeText(deviceId)}
+                  onClick={handleCopyId}
                   aria-label="Copy player ID"
                 >
                   Copy
                 </button>
               </div>
+              {copyStatus && <p className="copy-status">{copyStatus}</p>}
             </div>
             {/* Mode hidden; default solo */}
             <label className="field inline">
