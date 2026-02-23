@@ -71,9 +71,9 @@ h1 { margin: 0; font-size: 28px; letter-spacing: -0.4px; }
 
 .field.inline { flex-direction: row; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
 
-.id-row { display: inline-flex; align-items: center; gap: 8px; }
+.id-row { display: inline-flex; align-items: center; gap: 8px; position: relative; }
 .device-id { background: rgba(255,255,255,0.05); padding: 6px 8px; border-radius: 8px; font-size: 12px; color: var(--muted); }
-.copy-status { margin: 4px 0 0; font-size: 12px; color: var(--accent); }
+.copy-toast { position: absolute; top: -18px; right: 0; background: rgba(124,243,197,0.14); color: var(--accent); padding: 4px 8px; border-radius: 10px; font-size: 11px; }
 
 .segmented { display: inline-flex; background: #0c1018; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; overflow: hidden; }
 .segmented button {

@@ -16,7 +16,13 @@ const ensureDeviceId = () => {
 };
 
 function App() {
-  const [playerName, setPlayerName] = useState('');
+  const savedName = (() => {
+    const val = typeof localStorage !== 'undefined' ? localStorage.getItem(NAME_KEY) : '';
+    return val || '';
+  })();
+  const [playerName, setPlayerName] = useState(savedName);
+  const [pendingName, setPendingName] = useState(savedName);
+  const [nameLocked, setNameLocked] = useState(!!savedName.trim());
   const [deviceId] = useState(() => ensureDeviceId());
   const [mode] = useState('solo');
   const [difficulty, setDifficulty] = useState('normal');
@@ -45,19 +51,19 @@ function App() {
   }, [mode]);
 
   useEffect(() => {
-    const savedName = localStorage.getItem(NAME_KEY);
-    if (savedName && savedName.trim().length > 0) {
-      setPlayerName(savedName);
-    }
+    // no-op now; state initialized above
   }, []);
 
-  const handleNameChange = (value) => {
-    setPlayerName(value);
-    localStorage.setItem(NAME_KEY, value);
+  const handleSaveName = () => {
+    const cleaned = pendingName.trim();
+    if (!cleaned) return;
+    setPlayerName(cleaned);
+    localStorage.setItem(NAME_KEY, cleaned);
+    setNameLocked(true);
   };
 
   const handleFinish = async ({ score }) => {
-    const canPlay = playerName.trim().length > 0;
+    const canPlay = playerName.trim().length > 0 && nameLocked;
     if (!canPlay) return;
     try {
       await submitScore({ playerName, score, mode, deviceId });
@@ -113,10 +119,16 @@ function App() {
             <label className="field">
               <span>Player tag (saved on this device)</span>
               <input
-                value={playerName}
-                onChange={(e) => handleNameChange(e.target.value)}
+                value={nameLocked ? playerName : pendingName}
+                onChange={(e) => !nameLocked && setPendingName(e.target.value)}
+                disabled={nameLocked}
                 maxLength={32}
               />
+              {!nameLocked && (
+                <button className="mini-btn" type="button" onClick={handleSaveName}>
+                  Save Name
+                </button>
+              )}
             </label>
             <div className="field inline">
               <span>Player ID</span>
@@ -130,8 +142,8 @@ function App() {
                 >
                   Copy
                 </button>
+                {copyStatus && <span className="copy-toast">{copyStatus}</span>}
               </div>
-              {copyStatus && <p className="copy-status">{copyStatus}</p>}
             </div>
             {/* Mode hidden; default solo */}
             <label className="field inline">
